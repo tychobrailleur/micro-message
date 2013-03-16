@@ -5,6 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jruby.plugins.version>1.0.0-beta</jruby.plugins.version>
   </properties>
 
@@ -41,11 +42,29 @@
       <artifactId>activemq-camel</artifactId>
       <version>5.8.0</version>
     </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>nokogiri</artifactId>
+      <version>1.5.6</version>
+      <type>gem</type>
+    </dependency>
   </dependencies>
 
   <build>
     <defaultGoal>package</defaultGoal>
     <plugins>
+      <plugin>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>gem-maven-plugin</artifactId>
+        <version>${jruby.plugins.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>initialize</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>de.saumya.mojo</groupId>
         <artifactId>jruby-maven-plugin</artifactId>
@@ -68,6 +87,12 @@
               <mainClass>main</mainClass>
             </transformer>
           </transformers>
+          <!-- Exclude gems, as shade cannot find them. -->
+          <artifactSet>
+            <excludes>
+              <exclude>rubygems:*</exclude>
+            </excludes>
+          </artifactSet>
         </configuration>
         <executions>
           <execution>
