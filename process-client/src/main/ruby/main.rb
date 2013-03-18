@@ -30,7 +30,9 @@ class ClientRouter < RouteBuilder
       end
     end.to("direct:path")
 
-    from("direct:path").wire_tap("direct:audit").to("stream:out")
+    from("direct:path").wire_tap("direct:audit")
+      .set_header(Exchange::HTTP_METHOD, constant("POST"))
+      .to("http://localhost:9495/process")
 
     from("direct:audit").set_header(Exchange::HTTP_METHOD, constant("POST")).to("http://localhost:4567/audit")
   end
