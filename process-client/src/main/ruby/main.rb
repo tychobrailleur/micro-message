@@ -20,7 +20,7 @@ class ParseMessageProcessor
     message = exchange.get_in().body
 
     # Process incoming xml message
-    doc = Nokogiri::XML(message)
+    doc = Nokogiri::XML(message.to_s)
     code = doc.at_xpath("/message/code").text()
     
     # Exit when code is END.
