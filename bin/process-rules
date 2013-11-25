@@ -1,0 +1,20 @@
+#!/bin/sh
+
+CWD=`dirname $0`
+MICRO_MESSAGE_DIR=${CWD}/..
+ETC=${MICRO_MESSAGE_DIR}/etc
+PROCESS_RULES_DIR=${MICRO_MESSAGE_DIR}/process-rules
+PID_FILE=${ETC}/process-rules.pid
+
+case "$1" in
+  start)
+  echo "Starting process-rules..."
+  cd ${PROCESS_RULES_DIR} && bundle exec ruby app.rb &
+  echo $! > ${PID_FILE}
+  echo "Started with pid: $(cat ${PID_FILE})"
+  ;;
+  stop)
+  echo "Stopping process-rules..."
+  kill $(cat ${PID_FILE})
+  ;;
+esac

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+CWD=`dirname $0`
+MICRO_MESSAGE_DIR=${CWD}/..
+ETC=${MICRO_MESSAGE_DIR}/etc
+PROCESS_AUDIT_DIR=${MICRO_MESSAGE_DIR}/process-audit
+PID_FILE=${ETC}/process-audit.pid
+
+case "$1" in
+  start)
+  echo "Starting process-audit..."
+  cd ${PROCESS_AUDIT_DIR} && bundle exec ruby app.rb &
+  echo $! > ${PID_FILE}
+  echo "Started with pid: $(cat ${PID_FILE})"
+  ;;
+  stop)
+  echo "Stopping process-audit..."
+  kill $(cat ${PID_FILE})
+  ;;
+esac
