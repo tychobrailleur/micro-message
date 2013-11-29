@@ -1,0 +1,7 @@
+development: &non_production_settings
+  adapter: mysql2
+  encoding: utf8
+  database: micro-message
+  host: localhost
+  username: root
+  password: 
