@@ -1,3 +1,5 @@
+puts ENV['GEM_HOME']
+
 require 'nokogiri'
 
 java_import 'org.apache.camel.CamelContext'
@@ -9,7 +11,7 @@ java_import 'org.apache.camel.impl.DefaultProducerTemplate'
 java_import 'org.apache.camel.builder.RouteBuilder'
 
 context = DefaultCamelContext.new
-endpoint = context.get_endpoint("activemq:test.queue")
+endpoint = context.get_endpoint("rabbitmq://loalhost/test.queue?queue=queue.incoming&durable=true&autoDelete=false")
 consumer = endpoint.create_polling_consumer()
 
 class ParseMessageProcessor
@@ -22,7 +24,7 @@ class ParseMessageProcessor
     # Process incoming xml message
     doc = Nokogiri::XML(message.to_s)
     code = doc.at_xpath("/message/code").text()
-    
+
     # Exit when code is END.
     if code == "END"
       puts "Bye."
@@ -36,7 +38,7 @@ end
 
 class ClientRouter < RouteBuilder
   def configure
-    from("activemq:test.queue").process(ParseMessageProcessor.new)
+    from("rabbitmq://localhost/test.queue?queue=queue.incoming&durable=true&autoDelete=false").process(ParseMessageProcessor.new)
       .to("direct:path")
 
     from("direct:path").wire_tap("direct:audit")

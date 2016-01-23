@@ -14,5 +14,5 @@ object Main {
 }
 
 class ProducerRouter extends RouteBuilder {
-  def configure():Unit = from("file:outbox?delay=750").wireTap("stream:out").to("activemq:test.queue")
+  def configure():Unit = from("file:outbox?delay=750").wireTap("stream:out").to("rabbitmq://localhost/test.queue")
 }
